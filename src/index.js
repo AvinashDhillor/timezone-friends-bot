@@ -1,4 +1,6 @@
+require("dotenv").config();
 const { Client, Collection, Intents } = require("discord.js");
+require("./db/connection");
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -30,5 +32,5 @@ for (const file of commandFiles) {
 }
 
 // -----LOGIN-----
-require("dotenv").config();
+
 client.login(process.env.TOKEN);

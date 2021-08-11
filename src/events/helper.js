@@ -2,6 +2,16 @@ module.exports = {
   name: "messageCreate",
   async execute(message, client) {
     if (!client.application?.owner) await client.application?.fetch();
+
+    const data = {
+      name: "time",
+      description: "Replies with pong!",
+    };
+
+    const command = await client.guilds.cache
+      .get("757590934828613662")
+      ?.commands.create(data);
+
     if (
       message.content.toLowerCase() === "!deploy" &&
       message.author.id === client.application?.owner.id
@@ -32,7 +42,7 @@ module.exports = {
         .get("757590934828613662")
         ?.commands.create(data);
 
-      console.log(command);
+      //console.log(command);
     }
   },
 };
