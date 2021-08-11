@@ -1,0 +1,25 @@
+{
+  "name": "timezone-friends-bot",
+  "version": "1.0.0",
+  "description": "XD",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "cd src && node index.js",
+    "dev": "cd src && nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plskz/timezone-friends-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plskz/timezone-friends-bot/issues"
+  },
+  "homepage": "https://github.com/plskz/timezone-friends-bot#readme",
+  "dependencies": {
+    "discord.js": "^13.0.1",
+    "dotenv": "^10.0.0"
+  }
+}
