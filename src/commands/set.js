@@ -53,7 +53,7 @@ module.exports = {
 
         const collector = message.channel.createMessageComponentCollector({
           filter: navigationFilter,
-          time: 500000,
+          time: 120000,
         });
 
         collector.on("collect", async (i) => {
@@ -107,7 +107,7 @@ module.exports = {
         const messageCollector = message.channel.createMessageCollector({
           filter: messageFilter,
           max: 1,
-          time: 500000,
+          time: 120000,
         });
 
         messageCollector.on("collect", (m) => {
