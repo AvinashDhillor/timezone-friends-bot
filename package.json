@@ -7,6 +7,9 @@
     "start": "cd src && node index.js",
     "dev": "cd src && nodemon index.js"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plskz/timezone-friends-bot.git"
