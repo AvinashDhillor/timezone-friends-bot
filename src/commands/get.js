@@ -53,6 +53,7 @@ module.exports = {
           ];
           result.push(tmpData);
         } catch (e) {
+          console.log(e);
           let tmpData = [
             `${displayName ? displayName : user.username}`,
             `Not set `,
