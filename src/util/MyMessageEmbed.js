@@ -25,8 +25,8 @@ class MyMessageEmbed {
     for (let i = 0; i < tmpdata.length; i++) {
       let embed = {
         color: 0x0099ff,
-        title: "Select from list",
-        description: "Select region ",
+        title: "Timezone Friends list",
+        description: "Select your region",
         fields: [tmpdata[i]],
         footer: { text: "Reply with respective location number." },
       };
