@@ -1,4 +1,5 @@
 const { MessageActionRow, MessageButton } = require("discord.js");
+
 const moment = require("moment-timezone");
 
 // User defined
@@ -40,7 +41,7 @@ module.exports = {
 
     message.channel
       .send({ embeds: [myMessageEmbed.nextEmbed()], components: [row] })
-      .then(() => {
+      .then(async () => {
         // ---------- Buttons -------------
 
         const navigationFilter = (i) =>
@@ -48,34 +49,42 @@ module.exports = {
             i.customId === "prev" ||
             i.customId === "first" ||
             i.customId === "last") &&
-          author_id === i.author.id;
+          author_id === i.user.id;
 
         const collector = message.channel.createMessageComponentCollector({
-          navigationFilter,
+          filter: navigationFilter,
           time: 200000,
         });
 
         collector.on("collect", async (i) => {
-          if (i.customId === "next") {
-            await i.deferUpdate();
-            await i.editReply({
-              embeds: [myMessageEmbed.nextEmbed()],
-            });
-          } else if (i.customId === "prev") {
-            await i.deferUpdate();
-            await i.editReply({
-              embeds: [myMessageEmbed.prevEmbed()],
-            });
-          } else if (i.customId === "first") {
-            await i.deferUpdate();
-            await i.editReply({
-              embeds: [myMessageEmbed.firstEmbed()],
-            });
-          } else if (i.customId === "last") {
-            await i.deferUpdate();
-            await i.editReply({
-              embeds: [myMessageEmbed.lastEmbed()],
-            });
+          try {
+            if (i.customId === "next") {
+              await i.deferUpdate();
+
+              await i.editReply({
+                embeds: [myMessageEmbed.nextEmbed()],
+              });
+            } else if (i.customId === "prev") {
+              await i.deferUpdate();
+
+              await i.editReply({
+                embeds: [myMessageEmbed.prevEmbed()],
+              });
+            } else if (i.customId === "first") {
+              await i.deferUpdate();
+
+              await i.editReply({
+                embeds: [myMessageEmbed.firstEmbed()],
+              });
+            } else if (i.customId === "last") {
+              await i.deferUpdate();
+
+              await i.editReply({
+                embeds: [myMessageEmbed.lastEmbed()],
+              });
+            }
+          } catch (e) {
+            console.log(e);
           }
         });
 
@@ -85,25 +94,26 @@ module.exports = {
 
         // --------- Message Response -----------
 
-        let inputFilter = (m) => {
-          return m.author.id === author_id;
+        const messageFilter = (m) => {
+          let inputNumber = m.content;
+          return (
+            author_id === m.author.id &&
+            Number.isInteger(parseInt(inputNumber)) &&
+            inputNumber <= timezoneArray.length &&
+            inputNumber >= 1
+          );
         };
 
-        message.channel
-          .awaitMessages({
-            inputFilter,
-            max: 1,
-            time: 200000,
-            errors: ["time"],
-          })
-          .then((collected) => {
-            let inputNumber = collected.first().content;
-            if (
-              !Number.isInteger(parseInt(inputNumber)) ||
-              inputNumber > timezoneArray.length
-            ) {
-              return message.channel.send("❌ please enter valid input");
-            }
+        const messageCollector = message.channel.createMessageCollector({
+          filter: messageFilter,
+          max: 1,
+          time: 200000,
+        });
+
+        messageCollector.on("collect", (m) => {
+          try {
+            let inputNumber = m.content;
+
             data.timezone = timezoneArray[inputNumber - 1];
 
             User.insertOrUpdate(data.serverId, data.userId, data.timezone)
@@ -113,11 +123,15 @@ module.exports = {
                 );
               })
               .catch((e) => console.log(e));
-          })
-          .catch((collected) => {
-            console.log(collected);
+          } catch (e) {
+            console.log(e);
             message.channel.send("❌ Error");
-          });
+          }
+        });
+
+        messageCollector.on("end", (collected) => {
+          console.log(`Collected ${collected.size} items`);
+        });
       });
   },
 };

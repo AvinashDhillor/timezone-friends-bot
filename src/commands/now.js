@@ -1,4 +1,5 @@
 const moment = require("moment-timezone");
+const wait = require("util").promisify(setTimeout);
 const { MessageActionRow, MessageButton } = require("discord.js");
 
 const MyMessageEmbed = require("../util/MyMessageEmbed");
@@ -27,43 +28,50 @@ module.exports = {
       .then(() => {
         // ---------- Buttons -------------
 
-        const filter = (i) =>
-          (i.customId === "next" ||
-            i.customId === "prev" ||
-            i.customId === "first" ||
-            i.customId === "last") &&
-          author_id === i.author.id;
+        const messageComponentFilter = (i) => {
+          return (
+            (i.customId === "next" ||
+              i.customId === "prev" ||
+              i.customId === "first" ||
+              i.customId === "last") &&
+            i.user.id === author_id
+          );
+        };
 
         const collector = message.channel.createMessageComponentCollector({
-          filter,
+          filter: messageComponentFilter,
           time: 200000,
         });
 
         collector.on("collect", async (i) => {
-          if (i.customId === "next") {
-            await i.deferUpdate();
+          try {
+            if (i.customId === "next") {
+              await i.deferUpdate();
 
-            await i.editReply({
-              embeds: [myMessageEmbed.nextEmbed()],
-            });
-          } else if (i.customId === "prev") {
-            await i.deferUpdate();
+              await i.editReply({
+                embeds: [myMessageEmbed.nextEmbed()],
+              });
+            } else if (i.customId === "prev") {
+              await i.deferUpdate();
 
-            await i.editReply({
-              embeds: [myMessageEmbed.prevEmbed()],
-            });
-          } else if (i.customId === "first") {
-            await i.deferUpdate();
+              await i.editReply({
+                embeds: [myMessageEmbed.prevEmbed()],
+              });
+            } else if (i.customId === "first") {
+              await i.deferUpdate();
 
-            await i.editReply({
-              embeds: [myMessageEmbed.firstEmbed()],
-            });
-          } else if (i.customId === "last") {
-            await i.deferUpdate();
+              await i.editReply({
+                embeds: [myMessageEmbed.firstEmbed()],
+              });
+            } else if (i.customId === "last") {
+              await i.deferUpdate();
 
-            await i.editReply({
-              embeds: [myMessageEmbed.lastEmbed()],
-            });
+              await i.editReply({
+                embeds: [myMessageEmbed.lastEmbed()],
+              });
+            }
+          } catch (e) {
+            console.log(e);
           }
         });
 
@@ -72,20 +80,26 @@ module.exports = {
         );
 
         // --------- Response -----------
-        let filter1 = (m) => {
-          return m.author.id === message.author.id;
+        const messageFilter = (m) => {
+          let inputNumber = m.content;
+          return (
+            author_id === m.author.id &&
+            Number.isInteger(parseInt(inputNumber)) &&
+            inputNumber <= timezoneArray.length &&
+            inputNumber >= 1
+          );
         };
 
-        message.channel
-          .awaitMessages({ filter1, max: 1, time: 200000, errors: ["time"] })
-          .then((collected) => {
-            let inputNumber = collected.first().content;
-            if (
-              !Number.isInteger(parseInt(inputNumber)) ||
-              inputNumber > timezoneArray.length
-            ) {
-              return message.channel.send("❌ please enter valid input");
-            }
+        const messageCollector = message.channel.createMessageCollector({
+          filter: messageFilter,
+          max: 1,
+          time: 200000,
+        });
+
+        messageCollector.on("collect", (m) => {
+          try {
+            let inputNumber = m.content;
+            console.log(inputNumber);
             const date = moment()
               .tz(timezoneArray[inputNumber - 1])
               .format("Do-MMMM-YYYY");
@@ -95,11 +109,15 @@ module.exports = {
             return message.channel.send(
               `**${timezoneArray[inputNumber - 1]}**\n📆 ${date}  ⏲ ${time}`
             );
-          })
-          .catch((collected) => {
-            console.log(collected);
+          } catch (e) {
+            console.log(e);
             message.channel.send("❌ Error");
-          });
+          }
+        });
+
+        messageCollector.on("end", (collected) => {
+          console.log(`Collected ${collected.size} items`);
+        });
       });
   },
 };
