@@ -4,7 +4,7 @@ module.exports = {
   async execute(client) {
     console.log(`Ready! Logged in as ${client.user.username}`);
     client.user.setPresence({
-      activities: [{ type: "WATCHING", name: "Netflix" }],
+      activities: [{ type: "PLAYING", name: "`tz help`" }],
     });
   },
 };
