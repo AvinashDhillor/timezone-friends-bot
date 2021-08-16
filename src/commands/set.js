@@ -95,13 +95,7 @@ module.exports = {
         // --------- Message Response -----------
 
         const messageFilter = (m) => {
-          let inputNumber = m.content;
-          return (
-            author_id === m.author.id &&
-            Number.isInteger(parseInt(inputNumber)) &&
-            inputNumber <= timezoneArray.length &&
-            inputNumber >= 1
-          );
+          return author_id === m.author.id;
         };
 
         const messageCollector = message.channel.createMessageCollector({
@@ -113,6 +107,18 @@ module.exports = {
         messageCollector.on("collect", (m) => {
           try {
             let inputNumber = m.content;
+            try {
+              if (
+                !Number.isInteger(parseInt(inputNumber)) ||
+                inputNumber >= timezoneArray.length ||
+                inputNumber <= 0
+              ) {
+                return m.reply(`❌ Invalid Input`);
+              }
+            } catch (e) {
+              console.log(e);
+              return m.reply(`❌ Invalid Input`);
+            }
 
             data.timezone = timezoneArray[inputNumber - 1];
 
@@ -125,7 +131,7 @@ module.exports = {
               .catch((e) => console.log(e));
           } catch (e) {
             console.log(e);
-            message.channel.send("❌ Error");
+            m.reply("❌ Error");
           }
         });
 
