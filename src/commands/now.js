@@ -99,7 +99,6 @@ module.exports = {
         messageCollector.on("collect", (m) => {
           try {
             let inputNumber = m.content;
-            console.log(inputNumber);
             const date = moment()
               .tz(timezoneArray[inputNumber - 1])
               .format("Do-MMMM-YYYY");

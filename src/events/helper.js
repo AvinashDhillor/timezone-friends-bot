@@ -94,8 +94,6 @@ module.exports = {
       const command = await client.guilds.cache
         .get("757590934828613662")
         ?.commands.create(data);
-
-      console.log(command);
     }
   },
 };
