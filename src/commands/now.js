@@ -99,8 +99,6 @@ module.exports = {
         messageCollector.on("collect", (m) => {
           try {
             let inputNumber = m.content;
-<<<<<<< HEAD
-=======
             try {
               if (
                 !Number.isInteger(parseInt(inputNumber)) ||
@@ -114,7 +112,6 @@ module.exports = {
               return m.reply(`❌ Invalid Input`);
             }
 
->>>>>>> AD
             const date = moment()
               .tz(timezoneArray[inputNumber - 1])
               .format("Do-MMMM-YYYY");
