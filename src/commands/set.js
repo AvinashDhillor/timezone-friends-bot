@@ -34,8 +34,14 @@ module.exports = {
         .setCustomId("first")
         .setLabel("⏮")
         .setStyle("PRIMARY"),
-      new MessageButton().setCustomId("prev").setLabel("←").setStyle("SUCCESS"),
-      new MessageButton().setCustomId("next").setLabel("→").setStyle("SUCCESS"),
+      new MessageButton()
+        .setCustomId("prev")
+        .setLabel("◀️")
+        .setStyle("SUCCESS"),
+      new MessageButton()
+        .setCustomId("next")
+        .setLabel("▶️")
+        .setStyle("SUCCESS"),
       new MessageButton().setCustomId("last").setLabel("⏭").setStyle("PRIMARY")
     );
 
