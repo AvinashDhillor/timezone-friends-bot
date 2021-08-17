@@ -37,11 +37,11 @@ module.exports = {
       new MessageButton()
         .setCustomId("prev")
         .setLabel("◀️")
-        .setStyle("SUCCESS"),
+        .setStyle("PRIMARY"),
       new MessageButton()
         .setCustomId("next")
         .setLabel("▶️")
-        .setStyle("SUCCESS"),
+        .setStyle("PRIMARY"),
       new MessageButton().setCustomId("last").setLabel("⏭").setStyle("PRIMARY")
     );
 
